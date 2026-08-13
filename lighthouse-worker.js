@@ -1,57 +1,13 @@
 import lighthouse from "lighthouse";
 import * as chromeLauncher from "chrome-launcher";
 import { computeMedianRun } from "lighthouse/core/lib/median-run.js";
-import baseConfig from "./custom-config.js";
+import { deviceConfigs } from "./device-configs.js";
 
 const RUNS_PER_TEST = Number(process.env.RUNS_PER_TEST || 3);
 
-const deviceConfigs = {
-  mobile: {
-    ...baseConfig,
-    settings: {
-      ...baseConfig.settings,
-      formFactor: "mobile",
-      screenEmulation: {
-        mobile: true,
-        width: 412,
-        height: 823,
-        deviceScaleFactor: 1.75,
-        disabled: false,
-      },
-      throttling: {
-        rttMs: 150,
-        throughputKbps: 1638.4,
-        cpuSlowdownMultiplier: 4,
-        requestLatencyMs: 0,
-        downloadThroughputKbps: 0,
-        uploadThroughputKbps: 0,
-      },
-    },
-  },
-  desktop: {
-    ...baseConfig,
-    settings: {
-      ...baseConfig.settings,
-      formFactor: "desktop",
-      screenEmulation: {
-        mobile: false,
-        width: 1350,
-        height: 940,
-        deviceScaleFactor: 1,
-        disabled: false,
-      },
-      throttling: {
-        rttMs: 40,
-        throughputKbps: 10240,
-        cpuSlowdownMultiplier: 1,
-        requestLatencyMs: 0,
-        downloadThroughputKbps: 0,
-        uploadThroughputKbps: 0,
-      },
-    },
-  },
-};
-
+// Bewust displayValue: dit is de snapshot-tool, bedoeld om even naar te
+// kijken. Voor iets waar je conclusies aan wilt verbinden is ab-test.js het
+// juiste gereedschap - die slaat numericValue op en houdt alle runs bij.
 function extractMetrics(lhr) {
   return {
     performanceScore: Math.round(lhr.categories.performance.score * 100),

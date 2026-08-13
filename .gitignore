@@ -1,2 +1,5 @@
 node_modules/
 lighthouse-results.json
+ab-results.json
+.env
+.env.backup-*

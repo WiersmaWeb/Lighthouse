@@ -1,5 +1,12 @@
 {
   "type": "module",
+  "scripts": {
+    "setup": "node setup.js",
+    "snapshot": "node lighthouse-analyse.js",
+    "noise": "node ab-test.js --aa",
+    "measure": "node ab-test.js",
+    "report": "node ab-report.js"
+  },
   "dependencies": {
     "lighthouse": "^13.4.0"
   }
