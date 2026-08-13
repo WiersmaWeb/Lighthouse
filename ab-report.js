@@ -84,11 +84,16 @@ export function report(rows, { mode = "ab" } = {}) {
       continue;
     }
 
+    // In een A/A-run is er geen "aan" en "uit": beide groepen zijn dezelfde
+    // configuratie. Ze zo noemen suggereert een verschil dat er niet is.
+    const labelOff = mode === "aa" ? "groep A" : "uit";
+    const labelOn = mode === "aa" ? "groep B" : "aan";
+
     const onBlocks = new Set(onRows.map((r) => r.block)).size;
     const offBlocks = new Set(offRows.map((r) => r.block)).size;
     console.log(
-      `n = ${onRows.length} runs over ${onBlocks} blokken (aan) ` +
-        `vs ${offRows.length} runs over ${offBlocks} blokken (uit)`,
+      `n = ${offRows.length} runs over ${offBlocks} blokken (${labelOff}) ` +
+        `vs ${onRows.length} runs over ${onBlocks} blokken (${labelOn})`,
     );
 
     // Was de edge-cache niet in elk blok in dezelfde staat, dan zit het
@@ -121,8 +126,8 @@ export function report(rows, { mode = "ab" } = {}) {
 
       table.push({
         metric: metric.label,
-        uit: formatValue(metric.unit, offMedian),
-        aan: formatValue(metric.unit, onMedian),
+        [labelOff]: formatValue(metric.unit, offMedian),
+        [labelOn]: formatValue(metric.unit, onMedian),
         spreiding: `+/- ${formatValue(metric.unit, mad(offValues))}`,
         verschil: formatValue(metric.unit, diff, { signed: true }),
         "95% CI": `[${formatValue(metric.unit, ci.low, { signed: true })}, ${formatValue(

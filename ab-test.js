@@ -303,7 +303,15 @@ async function main() {
   try {
     for (let i = 0; i < blocks.length; i++) {
       const variant = blocks[i];
-      console.log(`\nBlok ${i + 1}/${blocks.length} - FlyingPress ${variant.toUpperCase()}`);
+      // In A/A-modus is `variant` puur een groepslabel: er wordt niets omgezet.
+      // Dat moet de melding ook zeggen, anders lijkt het alsof de plugin wel
+      // aan en uit gaat.
+      console.log(
+        MODE === "ab"
+          ? `\nBlok ${i + 1}/${blocks.length} - FlyingPress ${variant.toUpperCase()}`
+          : `\nBlok ${i + 1}/${blocks.length} - groep ${variant === "off" ? "A" : "B"} ` +
+              `(A/A: plugin blijft ongemoeid)`,
+      );
       if (MODE === "ab") await setPlugin(variant);
 
       // Volgorde is essentieel: eerst de origin omzetten, dan pas de edge
