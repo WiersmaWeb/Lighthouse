@@ -1,7 +1,7 @@
 export default {
   extends: "lighthouse:default",
   settings: {
-    emulatedFormFactor: "mobile",
+    formFactor: "mobile",
     throttlingMethod: "simulate",
     output: "json",
     onlyCategories: ["performance"],

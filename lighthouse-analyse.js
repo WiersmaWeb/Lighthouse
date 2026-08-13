@@ -1,8 +1,6 @@
 import fs from "fs";
-import lighthouse from "lighthouse";
-import * as chromeLauncher from "chrome-launcher";
-import { computeMedianRun } from "lighthouse/core/lib/median-run.js";
-import baseConfig from "./custom-config.js";
+import { fork } from "child_process";
+import { fileURLToPath } from "url";
 
 // ---------------------------------------------------------------------------
 // Config
@@ -10,66 +8,25 @@ import baseConfig from "./custom-config.js";
 
 // Voeg hier alle URL's toe die je wilt testen
 const urls = [
-  "https://wiersmaweb.nl/",
-  "https://wiersmaweb.nl/check/",
-  "https://wiersmaweb.nl/websitesnelheid-getest-met-pagespeed-insights/",
+  "https://zfb2u17p7j-staging.onrocket.site/",
+  "https://zfb2u17p7j-staging.onrocket.site/check/",
+  "https://zfb2u17p7j-staging.onrocket.site/websitesnelheid-getest-met-pagespeed-insights/",
+  "https://zfb2u17p7j-staging.onrocket.site/contact/",
 ];
 
 // Aantal Lighthouse runs per URL/device-combinatie (mediaan wordt hiervan berekend)
 const RUNS_PER_TEST = 5;
 
-// Aantal Chrome-instanties dat gelijktijdig draait. Hoger = sneller, maar
-// zwaarder voor je machine. 3-4 is meestal een goede balans.
+// Aantal workers dat gelijktijdig draait. Hoger = sneller, maar zwaarder voor
+// je machine (en meer CPU-drukte kan je meetwaarden beinvloeden). 3-4 is
+// meestal een goede balans.
 const CONCURRENCY = 3;
 
-// Standaard device-instellingen (mobile = Lighthouse default throttling/emulatie,
-// desktop = geen mobile-emulatie en snellere throttling)
-const deviceConfigs = {
-  mobile: {
-    ...baseConfig,
-    settings: {
-      ...baseConfig.settings,
-      formFactor: "mobile",
-      screenEmulation: {
-        mobile: true,
-        width: 412,
-        height: 823,
-        deviceScaleFactor: 1.75,
-        disabled: false,
-      },
-      throttling: {
-        rttMs: 150,
-        throughputKbps: 1638.4,
-        cpuSlowdownMultiplier: 4,
-        requestLatencyMs: 0,
-        downloadThroughputKbps: 0,
-        uploadThroughputKbps: 0,
-      },
-    },
-  },
-  desktop: {
-    ...baseConfig,
-    settings: {
-      ...baseConfig.settings,
-      formFactor: "desktop",
-      screenEmulation: {
-        mobile: false,
-        width: 1350,
-        height: 940,
-        deviceScaleFactor: 1,
-        disabled: false,
-      },
-      throttling: {
-        rttMs: 40,
-        throughputKbps: 10240,
-        cpuSlowdownMultiplier: 1,
-        requestLatencyMs: 0,
-        downloadThroughputKbps: 0,
-        uploadThroughputKbps: 0,
-      },
-    },
-  },
-};
+// Elke worker is een apart Node-proces: Lighthouse houdt zijn interne timings
+// bij in globale performance-marks, dus twee Lighthouse-runs in hetzelfde
+// proces lopen elkaar in de weg. Vandaar fork() in plaats van een simpele
+// async worker-pool.
+const workerPath = fileURLToPath(new URL("./lighthouse-worker.js", import.meta.url));
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -85,79 +42,81 @@ function buildTasks() {
   return tasks;
 }
 
-// Windows gooit soms EPERM omdat het tijdelijke Chrome-profiel nog heel even
-// "vastzit" vlak na het afsluiten van het proces. We proberen het daarom een
-// paar keer met een oplopende vertraging voordat we het negeren.
-async function safeKill(chrome, workerId) {
-  for (let attempt = 1; attempt <= 5; attempt++) {
-    try {
-      await chrome.kill();
-      return;
-    } catch (err) {
-      if (attempt === 5) {
-        console.warn(
-          `[Worker ${workerId}] Kon tijdelijke Chrome-map niet opruimen (genegeerd): ${err.message}`,
-        );
+// Zet de resultaten terug in de volgorde van de urls-lijst, zodat de tabel
+// leesbaar blijft ongeacht welke worker als eerste klaar was.
+function sortResults(results) {
+  const order = (r) => urls.indexOf(r.url) * 2 + (r.device === "desktop" ? 0 : 1);
+  return [...results].sort((a, b) => order(a) - order(b));
+}
+
+// ---------------------------------------------------------------------------
+// Worker: start een child-proces en voed het taken uit de gedeelde wachtrij
+// tot die leeg is. Protocol (zie lighthouse-worker.js):
+//   worker -> ready | result | error
+//   ons    -> task | shutdown
+// ---------------------------------------------------------------------------
+
+function runWorker(workerId, taskQueue, allResults, failures) {
+  return new Promise((resolve) => {
+    const child = fork(workerPath, [], {
+      env: { ...process.env, RUNS_PER_TEST: String(RUNS_PER_TEST) },
+    });
+
+    let currentTask = null;
+
+    function sendNextTask() {
+      const task = taskQueue.shift();
+      currentTask = task ?? null;
+
+      if (!task) {
+        child.send({ type: "shutdown" });
         return;
       }
-      await new Promise((resolve) => setTimeout(resolve, 300 * attempt));
-    }
-  }
-}
-
-async function runLighthouseForUrlAndDevice(url, device, port) {
-  const results = [];
-  for (let i = 0; i < RUNS_PER_TEST; i++) {
-    const runnerResult = await lighthouse(
-      url,
-      { port, logLevel: "error" },
-      deviceConfigs[device],
-    );
-    results.push(runnerResult.lhr);
-  }
-  return computeMedianRun(results);
-}
-
-function extractMetrics(lhr) {
-  return {
-    performanceScore: Math.round(lhr.categories.performance.score * 100),
-    fcp: lhr.audits["first-contentful-paint"].displayValue,
-    lcp: lhr.audits["largest-contentful-paint"].displayValue,
-    speedIndex: lhr.audits["speed-index"].displayValue,
-    tbt: lhr.audits["total-blocking-time"].displayValue,
-    cls: lhr.audits["cumulative-layout-shift"].displayValue,
-  };
-}
-
-// ---------------------------------------------------------------------------
-// Worker: elke worker heeft zijn eigen Chrome-instantie en trekt taken van
-// de gedeelde wachtrij totdat die leeg is.
-// ---------------------------------------------------------------------------
-
-async function worker(workerId, taskQueue, allResults) {
-  const chrome = await chromeLauncher.launch({ chromeFlags: ["--headless"] });
-  console.log(`Worker ${workerId} gestart (poort ${chrome.port})`);
-
-  try {
-    while (taskQueue.length > 0) {
-      const task = taskQueue.shift();
-      if (!task) break;
 
       console.log(`[Worker ${workerId}] start ${task.device} - ${task.url}`);
-      const median = await runLighthouseForUrlAndDevice(
-        task.url,
-        task.device,
-        chrome.port,
-      );
-      const metrics = extractMetrics(median);
-      allResults.push({ url: task.url, device: task.device, ...metrics });
-      console.log(
-        `[Worker ${workerId}] klaar: ${task.device} score ${metrics.performanceScore} (${task.url})`,
-      );
+      child.send({ type: "task", task });
     }
-  } finally {
-    await safeKill(chrome, workerId);
-  }
+
+    child.on("message", (msg) => {
+      if (msg.type === "ready") {
+        console.log(`Worker ${workerId} gestart (pid ${child.pid})`);
+        sendNextTask();
+        return;
+      }
+
+      if (msg.type === "result") {
+        allResults.push({ url: msg.task.url, device: msg.task.device, ...msg.metrics });
+        console.log(
+          `[Worker ${workerId}] klaar: ${msg.task.device} score ${msg.metrics.performanceScore} (${msg.task.url})`,
+        );
+        sendNextTask();
+        return;
+      }
+
+      if (msg.type === "error") {
+        console.error(
+          `[Worker ${workerId}] FOUT bij ${msg.task.device} - ${msg.task.url}: ${msg.message}`,
+        );
+        failures.push({ ...msg.task, reden: msg.message });
+        sendNextTask();
+      }
+    });
+
+    child.on("error", (err) => {
+      console.error(`[Worker ${workerId}] procesfout: ${err.message}`);
+    });
+
+    // Valt de worker onverwacht om, dan is de taak waar hij mee bezig was
+    // verloren. We laten de overige workers gewoon doorlopen.
+    child.on("exit", (code, signal) => {
+      if (code !== 0) {
+        const reden = `worker gestopt (code ${code}${signal ? `, signaal ${signal}` : ""})`;
+        console.error(`[Worker ${workerId}] ${reden}`);
+        if (currentTask) failures.push({ ...currentTask, reden });
+      }
+      resolve();
+    });
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -167,20 +126,33 @@ async function worker(workerId, taskQueue, allResults) {
 async function main() {
   const taskQueue = buildTasks();
   const allResults = [];
+  const failures = [];
 
   const workerCount = Math.min(CONCURRENCY, taskQueue.length);
+  console.log(
+    `${taskQueue.length} taken x ${RUNS_PER_TEST} runs, verdeeld over ${workerCount} worker(s)\n`,
+  );
+
   const workers = [];
   for (let i = 1; i <= workerCount; i++) {
-    workers.push(worker(i, taskQueue, allResults));
+    workers.push(runWorker(i, taskQueue, allResults, failures));
   }
   await Promise.all(workers);
 
   console.log("\n\n===== SAMENVATTING =====");
-  console.table(allResults);
+  const sorted = sortResults(allResults);
+  console.table(sorted);
+
+  if (failures.length > 0) {
+    console.log(`\n${failures.length} taak/taken mislukt:`);
+    console.table(failures);
+  }
 
   const outputPath = "./lighthouse-results.json";
-  fs.writeFileSync(outputPath, JSON.stringify(allResults, null, 2));
+  fs.writeFileSync(outputPath, JSON.stringify(sorted, null, 2));
   console.log(`\nResultaten opgeslagen in ${outputPath}`);
+
+  if (allResults.length === 0) process.exit(1);
 }
 
 main().catch((err) => {
