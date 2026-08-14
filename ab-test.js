@@ -27,6 +27,8 @@ const execFileAsync = promisify(execFile);
 const URLS = [
   "https://zfb2u17p7j-staging.onrocket.site/",
   "https://zfb2u17p7j-staging.onrocket.site/websitesnelheid-getest-met-pagespeed-insights/",
+  "https://zfb2u17p7j-staging.onrocket.site/contact/",
+  "https://zfb2u17p7j-staging.onrocket.site/boost/",
 ];
 
 // Mobiel is waar de ruimte zit en waar de ruis het grootst is. Zet er
@@ -53,7 +55,10 @@ const CYCLES = Number(process.env.CYCLES || 3);
 // niet in PowerShell of cmd.
 const MODE = process.argv.includes("--aa") || process.env.MODE === "aa" ? "aa" : "ab";
 
-const OUTPUT_PATH = "./ab-results.json";
+// Aparte bestanden per modus, zodat een A/B-run je ruisvloer niet overschrijft.
+// Die twee horen bij elkaar: zonder de A/A-meting weet je niet vanaf welk
+// verschil je de A/B-uitkomst mag geloven.
+const OUTPUT_PATH = MODE === "aa" ? "./ab-results-aa.json" : "./ab-results.json";
 
 // Serieel meten, altijd. Parallelle Chrome-instanties vechten om CPU en dat
 // lekt door in je cijfers; throttlingMethod "simulate" dempt dat wel, maar de

@@ -5,7 +5,8 @@
     "snapshot": "node lighthouse-analyse.js",
     "noise": "node ab-test.js --aa",
     "measure": "node ab-test.js",
-    "report": "node ab-report.js"
+    "report": "node ab-report.js",
+    "report:noise": "node ab-report.js ab-results-aa.json"
   },
   "dependencies": {
     "lighthouse": "^13.4.0"
