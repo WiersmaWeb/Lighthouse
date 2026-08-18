@@ -7,6 +7,7 @@ import { deviceConfigs } from "./device-configs.js";
 import { extractMetrics } from "./metrics.js";
 import { report } from "./ab-report.js";
 import { cacheStatus, verifyPurgeWorks } from "./edge-cache.js";
+import { waitUntilStable } from "./page-signals.js";
 
 // Servergegevens komen uit .env (zie .env.example). Dat bestand staat in
 // .gitignore - je SSH-gegevens horen niet in git.
@@ -76,9 +77,14 @@ const PLUGIN_SLUG = process.env.PLUGIN_SLUG || "flying-press";
 const PURGE_WP_COMMAND = process.env.PURGE_WP_COMMAND;
 
 // Wachttijd na een purge voordat we gaan warmdraaien. De purge is asynchroon:
-// het commando keert meteen terug, maar de edge-nodes lopen er een paar
-// seconden achteraan.
-const PURGE_SETTLE_MS = Number(process.env.PURGE_SETTLE_MS || 8000);
+// het commando keert meteen terug, maar de edge loopt er achteraan.
+//
+// Deze stond op 8 seconden en dat was aantoonbaar te kort. Bij die instelling
+// klapte de gemeten FCP halverwege een blok om van 1679 naar 2734 ms, met
+// exact dezelfde HTML - de eerste metingen kregen nog de oude bestanden uit de
+// cache, de latere de verse. Welke waarde je kreeg hing dus af van waar in het
+// blok je toevallig mat. Met 60 seconden blijft de meting stabiel.
+const PURGE_SETTLE_MS = Number(process.env.PURGE_SETTLE_MS || 60000);
 
 // ---------------------------------------------------------------------------
 // WP-CLI over SSH
@@ -234,6 +240,23 @@ async function runBlock(blockIndex, variant, runs) {
       for (const device of DEVICES) {
         for (let i = 0; i < WARMUP_RUNS; i++) {
           await runOnce(url, device, chrome.port);
+        }
+
+        // FlyingPress bouwt na een purge zijn geoptimaliseerde CSS opnieuw op.
+        // Meet je daartussen, dan meet je een pagina die deels nog de
+        // onbewerkte bestanden serveert - en dat zie je aan niets. We wachten
+        // daarom tot twee opeenvolgende ophaalacties dezelfde HTML opleveren.
+        // Bewust niet gebonden aan een specifieke instelling, zodat dit blijft
+        // werken als de plugin verandert.
+        // In een uit-blok is de plugin gedeactiveerd, dan hoort dat kenmerk er
+        // juist niet te zijn.
+        const stability = await waitUntilStable(url, { requireMarker: variant === "on" });
+        if (!stability.stable) {
+          console.warn(
+            `  LET OP: ${url} was na ${stability.attempts} pogingen nog niet klaar ` +
+              `(bewerkt: ${stability.optimized}); deze metingen kunnen een half ` +
+              `opgebouwde cache bevatten.`,
+          );
         }
 
         // Pas na de warm-up uitlezen: dit is de cachestand waarin de metingen

@@ -1,5 +1,9 @@
 node_modules/
 lighthouse-results.json
 ab-results*.json
+feature-results.json
 .env
 .env.backup-*
+
+# Bevat je FlyingPress-licentiesleutel.
+flyingpress-config-backup.json
