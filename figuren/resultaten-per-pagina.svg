@@ -3,15 +3,15 @@
   <desc id="omschrijving">Twee panelen. Links het moment dat de pagina zichtbaar wordt: op alle vier de pagina's daalt dat van ongeveer 2700 naar ongeveer 970 milliseconde. Rechts het moment dat de pagina klaar is: homepage 2882 naar 2440, artikelpagina 4135 naar 2820, contactpagina 2733 naar 2439, boost-pagina 3035 naar 2438 milliseconde.</desc>
 
   <style>
-    .vlak   { fill: #fcfcfb; }
-    .kop    { font: 600 19px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #0b0b0b; }
-    .sub    { font: 13px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #52514e; }
-    .paneel { font: 600 14px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #0b0b0b; }
-    .pagina { font: 13px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #0b0b0b; }
-    .as     { font: 12px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #898781; font-variant-numeric: tabular-nums; }
-    .waarde { font: 600 12px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #52514e; font-variant-numeric: tabular-nums; }
-    .raster { stroke: #e1e0d9; stroke-width: 1; }
-    .basis  { stroke: #c3c2b7; stroke-width: 1; }
+    .vlak   { fill: #ffffff; }
+    .kop    { font: 600 19px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #222222; }
+    .sub    { font: 13px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #55555e; }
+    .paneel { font: 600 14px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #222222; }
+    .pagina { font: 13px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #222222; }
+    .as     { font: 12px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #b2b2be; font-variant-numeric: tabular-nums; }
+    .waarde { font: 600 12px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #55555e; font-variant-numeric: tabular-nums; }
+    .raster { stroke: #ebebef; stroke-width: 1; }
+    .basis  { stroke: #b2b2be; stroke-width: 1; }
   </style>
 
   <rect class="vlak" width="1000" height="430"/>
@@ -19,9 +19,9 @@
   <text class="kop" x="32" y="40">Wat FlyingPress met vier pagina's doet</text>
   <text class="sub" x="32" y="62">Milliseconden, mobiel gemeten. Lager is beter.</text>
 
-  <rect x="700" y="28" width="12" height="12" rx="3" fill="#eb6834"/>
+  <rect x="700" y="28" width="12" height="12" rx="3" fill="#222222"/>
   <text class="sub" x="718" y="39">plugin uit</text>
-  <rect x="800" y="28" width="12" height="12" rx="3" fill="#2a78d6"/>
+  <rect x="800" y="28" width="12" height="12" rx="3" fill="#ab47bc"/>
   <text class="sub" x="818" y="39">plugin aan</text>
 
   <text class="paneel" x="130" y="98">Pagina wordt zichtbaar</text>
@@ -41,49 +41,49 @@
   <text class="pagina" x="115" y="274" text-anchor="end">Contact</text>
   <text class="pagina" x="115" y="336" text-anchor="end">Boost</text>
 
-  <!-- Paneel 1: FCP -->
+  <!-- Paneel 1: pagina wordt zichtbaar -->
   <g>
-    <rect x="130" y="120" width="182.2" height="18" rx="3" fill="#eb6834"/>
+    <rect x="130" y="120" width="182.2" height="18" rx="3" fill="#222222"/>
     <text class="waarde" x="320" y="134">2733</text>
-    <rect x="130" y="142" width="63.6"  height="18" rx="3" fill="#2a78d6"/>
+    <rect x="130" y="142" width="63.6"  height="18" rx="3" fill="#ab47bc"/>
     <text class="waarde" x="201" y="156">954</text>
 
-    <rect x="130" y="182" width="182.1" height="18" rx="3" fill="#eb6834"/>
+    <rect x="130" y="182" width="182.1" height="18" rx="3" fill="#222222"/>
     <text class="waarde" x="320" y="196">2732</text>
-    <rect x="130" y="204" width="65.5"  height="18" rx="3" fill="#2a78d6"/>
+    <rect x="130" y="204" width="65.5"  height="18" rx="3" fill="#ab47bc"/>
     <text class="waarde" x="203" y="218">983</text>
 
-    <rect x="130" y="244" width="172.2" height="18" rx="3" fill="#eb6834"/>
+    <rect x="130" y="244" width="172.2" height="18" rx="3" fill="#222222"/>
     <text class="waarde" x="310" y="258">2583</text>
-    <rect x="130" y="266" width="63.9"  height="18" rx="3" fill="#2a78d6"/>
+    <rect x="130" y="266" width="63.9"  height="18" rx="3" fill="#ab47bc"/>
     <text class="waarde" x="201" y="280">958</text>
 
-    <rect x="130" y="306" width="182.2" height="18" rx="3" fill="#eb6834"/>
+    <rect x="130" y="306" width="182.2" height="18" rx="3" fill="#222222"/>
     <text class="waarde" x="320" y="320">2733</text>
-    <rect x="130" y="328" width="64.9"  height="18" rx="3" fill="#2a78d6"/>
+    <rect x="130" y="328" width="64.9"  height="18" rx="3" fill="#ab47bc"/>
     <text class="waarde" x="202" y="342">973</text>
   </g>
 
-  <!-- Paneel 2: LCP -->
+  <!-- Paneel 2: pagina is klaar -->
   <g>
-    <rect x="570" y="120" width="192.1" height="18" rx="3" fill="#eb6834"/>
+    <rect x="570" y="120" width="192.1" height="18" rx="3" fill="#222222"/>
     <text class="waarde" x="770" y="134">2882</text>
-    <rect x="570" y="142" width="162.7" height="18" rx="3" fill="#2a78d6"/>
+    <rect x="570" y="142" width="162.7" height="18" rx="3" fill="#ab47bc"/>
     <text class="waarde" x="740" y="156">2440</text>
 
-    <rect x="570" y="182" width="275.7" height="18" rx="3" fill="#eb6834"/>
+    <rect x="570" y="182" width="275.7" height="18" rx="3" fill="#222222"/>
     <text class="waarde" x="853" y="196">4135</text>
-    <rect x="570" y="204" width="188.0" height="18" rx="3" fill="#2a78d6"/>
+    <rect x="570" y="204" width="188.0" height="18" rx="3" fill="#ab47bc"/>
     <text class="waarde" x="766" y="218">2820</text>
 
-    <rect x="570" y="244" width="182.2" height="18" rx="3" fill="#eb6834"/>
+    <rect x="570" y="244" width="182.2" height="18" rx="3" fill="#222222"/>
     <text class="waarde" x="760" y="258">2733</text>
-    <rect x="570" y="266" width="162.6" height="18" rx="3" fill="#2a78d6"/>
+    <rect x="570" y="266" width="162.6" height="18" rx="3" fill="#ab47bc"/>
     <text class="waarde" x="740" y="280">2439</text>
 
-    <rect x="570" y="306" width="202.3" height="18" rx="3" fill="#eb6834"/>
+    <rect x="570" y="306" width="202.3" height="18" rx="3" fill="#222222"/>
     <text class="waarde" x="780" y="320">3035</text>
-    <rect x="570" y="328" width="162.5" height="18" rx="3" fill="#2a78d6"/>
+    <rect x="570" y="328" width="162.5" height="18" rx="3" fill="#ab47bc"/>
     <text class="waarde" x="740" y="342">2438</text>
   </g>
 
