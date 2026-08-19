@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 430" width="1000" height="430" role="img" aria-labelledby="titel omschrijving">
+  <title id="titel">Laadtijden per pagina, met en zonder FlyingPress</title>
+  <desc id="omschrijving">Twee panelen. Links het moment dat de pagina zichtbaar wordt: op alle vier de pagina's daalt dat van ongeveer 2700 naar ongeveer 970 milliseconde. Rechts het moment dat de pagina klaar is: homepage 2882 naar 2440, artikelpagina 4135 naar 2820, contactpagina 2733 naar 2439, boost-pagina 3035 naar 2438 milliseconde.</desc>
+
+  <style>
+    .vlak   { fill: #fcfcfb; }
+    .kop    { font: 600 19px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #0b0b0b; }
+    .sub    { font: 13px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #52514e; }
+    .paneel { font: 600 14px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #0b0b0b; }
+    .pagina { font: 13px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #0b0b0b; }
+    .as     { font: 12px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #898781; font-variant-numeric: tabular-nums; }
+    .waarde { font: 600 12px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #52514e; font-variant-numeric: tabular-nums; }
+    .raster { stroke: #e1e0d9; stroke-width: 1; }
+    .basis  { stroke: #c3c2b7; stroke-width: 1; }
+  </style>
+
+  <rect class="vlak" width="1000" height="430"/>
+
+  <text class="kop" x="32" y="40">Wat FlyingPress met vier pagina's doet</text>
+  <text class="sub" x="32" y="62">Milliseconden, mobiel gemeten. Lager is beter.</text>
+
+  <rect x="700" y="28" width="12" height="12" rx="3" fill="#eb6834"/>
+  <text class="sub" x="718" y="39">plugin uit</text>
+  <rect x="800" y="28" width="12" height="12" rx="3" fill="#2a78d6"/>
+  <text class="sub" x="818" y="39">plugin aan</text>
+
+  <text class="paneel" x="130" y="98">Pagina wordt zichtbaar</text>
+  <text class="paneel" x="570" y="98">Pagina is klaar</text>
+
+  <!-- Rasterlijnen -->
+  <g class="raster">
+    <line x1="196.7" y1="110" x2="196.7" y2="356"/><line x1="263.3" y1="110" x2="263.3" y2="356"/>
+    <line x1="330"   y1="110" x2="330"   y2="356"/><line x1="396.7" y1="110" x2="396.7" y2="356"/>
+    <line x1="636.7" y1="110" x2="636.7" y2="356"/><line x1="703.3" y1="110" x2="703.3" y2="356"/>
+    <line x1="770"   y1="110" x2="770"   y2="356"/><line x1="836.7" y1="110" x2="836.7" y2="356"/>
+  </g>
+
+  <!-- Paginalabels -->
+  <text class="pagina" x="115" y="150" text-anchor="end">Homepage</text>
+  <text class="pagina" x="115" y="212" text-anchor="end">Artikelpagina</text>
+  <text class="pagina" x="115" y="274" text-anchor="end">Contact</text>
+  <text class="pagina" x="115" y="336" text-anchor="end">Boost</text>
+
+  <!-- Paneel 1: FCP -->
+  <g>
+    <rect x="130" y="120" width="182.2" height="18" rx="3" fill="#eb6834"/>
+    <text class="waarde" x="320" y="134">2733</text>
+    <rect x="130" y="142" width="63.6"  height="18" rx="3" fill="#2a78d6"/>
+    <text class="waarde" x="201" y="156">954</text>
+
+    <rect x="130" y="182" width="182.1" height="18" rx="3" fill="#eb6834"/>
+    <text class="waarde" x="320" y="196">2732</text>
+    <rect x="130" y="204" width="65.5"  height="18" rx="3" fill="#2a78d6"/>
+    <text class="waarde" x="203" y="218">983</text>
+
+    <rect x="130" y="244" width="172.2" height="18" rx="3" fill="#eb6834"/>
+    <text class="waarde" x="310" y="258">2583</text>
+    <rect x="130" y="266" width="63.9"  height="18" rx="3" fill="#2a78d6"/>
+    <text class="waarde" x="201" y="280">958</text>
+
+    <rect x="130" y="306" width="182.2" height="18" rx="3" fill="#eb6834"/>
+    <text class="waarde" x="320" y="320">2733</text>
+    <rect x="130" y="328" width="64.9"  height="18" rx="3" fill="#2a78d6"/>
+    <text class="waarde" x="202" y="342">973</text>
+  </g>
+
+  <!-- Paneel 2: LCP -->
+  <g>
+    <rect x="570" y="120" width="192.1" height="18" rx="3" fill="#eb6834"/>
+    <text class="waarde" x="770" y="134">2882</text>
+    <rect x="570" y="142" width="162.7" height="18" rx="3" fill="#2a78d6"/>
+    <text class="waarde" x="740" y="156">2440</text>
+
+    <rect x="570" y="182" width="275.7" height="18" rx="3" fill="#eb6834"/>
+    <text class="waarde" x="853" y="196">4135</text>
+    <rect x="570" y="204" width="188.0" height="18" rx="3" fill="#2a78d6"/>
+    <text class="waarde" x="766" y="218">2820</text>
+
+    <rect x="570" y="244" width="182.2" height="18" rx="3" fill="#eb6834"/>
+    <text class="waarde" x="760" y="258">2733</text>
+    <rect x="570" y="266" width="162.6" height="18" rx="3" fill="#2a78d6"/>
+    <text class="waarde" x="740" y="280">2439</text>
+
+    <rect x="570" y="306" width="202.3" height="18" rx="3" fill="#eb6834"/>
+    <text class="waarde" x="780" y="320">3035</text>
+    <rect x="570" y="328" width="162.5" height="18" rx="3" fill="#2a78d6"/>
+    <text class="waarde" x="740" y="342">2438</text>
+  </g>
+
+  <!-- Assen -->
+  <line class="basis" x1="130" y1="356" x2="430" y2="356"/>
+  <line class="basis" x1="570" y1="356" x2="870" y2="356"/>
+  <g class="as" text-anchor="middle">
+    <text x="130" y="376">0</text><text x="196.7" y="376">1000</text><text x="263.3" y="376">2000</text>
+    <text x="330" y="376">3000</text><text x="396.7" y="376">4000</text>
+    <text x="570" y="376">0</text><text x="636.7" y="376">1000</text><text x="703.3" y="376">2000</text>
+    <text x="770" y="376">3000</text><text x="836.7" y="376">4000</text>
+  </g>
+  <text class="as" x="130" y="400">milliseconden</text>
+  <text class="as" x="570" y="400">milliseconden</text>
+</svg>

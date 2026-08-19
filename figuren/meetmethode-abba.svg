@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 430" width="920" height="430" role="img" aria-labelledby="titel omschrijving">
+  <title id="titel">Voor-en-na meten tegenover afwisselend meten</title>
+  <desc id="omschrijving">Twee tijdlijnen van twaalf meetblokken. Bovenaan de gangbare aanpak: eerst zes blokken met de plugin uit, daarna zes blokken met de plugin aan. Onderaan de gebruikte aanpak: aan, uit, uit, aan, telkens herhaald, zodat beide situaties over de hele sessie verspreid liggen.</desc>
+
+  <style>
+    .vlak  { fill: #fcfcfb; }
+    .kop   { font: 600 19px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #0b0b0b; }
+    .rij   { font: 600 14px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #0b0b0b; }
+    .uitleg{ font: 13px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #52514e; }
+    .as    { font: 12px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #898781; }
+    .merk  { font: 600 12px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #fcfcfb; }
+    .lijn  { stroke: #c3c2b7; stroke-width: 1; }
+  </style>
+
+  <rect class="vlak" width="920" height="430"/>
+
+  <text class="kop" x="32" y="42">Waarom ik afwisselend meet</text>
+  <text class="uitleg" x="32" y="66">Twaalf meetblokken, in de volgorde waarin ze gemeten zijn.</text>
+
+  <!-- Legenda -->
+  <rect x="700" y="30" width="12" height="12" rx="3" fill="#eb6834"/>
+  <text class="uitleg" x="718" y="41">plugin uit</text>
+  <rect x="800" y="30" width="12" height="12" rx="3" fill="#2a78d6"/>
+  <text class="uitleg" x="818" y="41">plugin aan</text>
+
+  <!-- Rij 1: voor en na -->
+  <text class="rij" x="32" y="122">Voor en na</text>
+  <text class="uitleg" x="32" y="142">zoals de meeste</text>
+  <text class="uitleg" x="32" y="159">mensen het doen</text>
+
+  <g transform="translate(190,104)">
+    <rect x="0"   y="0" width="46" height="40" rx="5" fill="#eb6834"/>
+    <rect x="52"  y="0" width="46" height="40" rx="5" fill="#eb6834"/>
+    <rect x="104" y="0" width="46" height="40" rx="5" fill="#eb6834"/>
+    <rect x="156" y="0" width="46" height="40" rx="5" fill="#eb6834"/>
+    <rect x="208" y="0" width="46" height="40" rx="5" fill="#eb6834"/>
+    <rect x="260" y="0" width="46" height="40" rx="5" fill="#eb6834"/>
+    <rect x="312" y="0" width="46" height="40" rx="5" fill="#2a78d6"/>
+    <rect x="364" y="0" width="46" height="40" rx="5" fill="#2a78d6"/>
+    <rect x="416" y="0" width="46" height="40" rx="5" fill="#2a78d6"/>
+    <rect x="468" y="0" width="46" height="40" rx="5" fill="#2a78d6"/>
+    <rect x="520" y="0" width="46" height="40" rx="5" fill="#2a78d6"/>
+    <rect x="572" y="0" width="46" height="40" rx="5" fill="#2a78d6"/>
+    <text class="merk" x="23"  y="25" text-anchor="middle">uit</text>
+    <text class="merk" x="335" y="25" text-anchor="middle">aan</text>
+  </g>
+
+  <text class="uitleg" x="190" y="170">Alles wat tussen de twee helften verandert — serverdrukte, netwerk,</text>
+  <text class="uitleg" x="190" y="188">je eigen computer — telt mee als effect van de plugin.</text>
+
+  <line class="lijn" x1="32" y1="216" x2="888" y2="216"/>
+
+  <!-- Rij 2: ABBA -->
+  <text class="rij" x="32" y="272">Afwisselend</text>
+  <text class="uitleg" x="32" y="292">zoals ik het</text>
+  <text class="uitleg" x="32" y="309">gedaan heb</text>
+
+  <g transform="translate(190,254)">
+    <rect x="0"   y="0" width="46" height="40" rx="5" fill="#2a78d6"/>
+    <rect x="52"  y="0" width="46" height="40" rx="5" fill="#eb6834"/>
+    <rect x="104" y="0" width="46" height="40" rx="5" fill="#eb6834"/>
+    <rect x="156" y="0" width="46" height="40" rx="5" fill="#2a78d6"/>
+    <rect x="208" y="0" width="46" height="40" rx="5" fill="#2a78d6"/>
+    <rect x="260" y="0" width="46" height="40" rx="5" fill="#eb6834"/>
+    <rect x="312" y="0" width="46" height="40" rx="5" fill="#eb6834"/>
+    <rect x="364" y="0" width="46" height="40" rx="5" fill="#2a78d6"/>
+    <rect x="416" y="0" width="46" height="40" rx="5" fill="#2a78d6"/>
+    <rect x="468" y="0" width="46" height="40" rx="5" fill="#eb6834"/>
+    <rect x="520" y="0" width="46" height="40" rx="5" fill="#eb6834"/>
+    <rect x="572" y="0" width="46" height="40" rx="5" fill="#2a78d6"/>
+  </g>
+
+  <text class="uitleg" x="190" y="320">Wordt de server halverwege trager, dan raakt dat beide situaties</text>
+  <text class="uitleg" x="190" y="338">even hard. Wat overblijft komt van de plugin.</text>
+
+  <!-- Tijdas -->
+  <line class="lijn" x1="190" y1="378" x2="808" y2="378"/>
+  <path d="M 808 378 l -7 -4 v 8 z" fill="#c3c2b7"/>
+  <text class="as" x="190" y="398">begin van de meetsessie</text>
+  <text class="as" x="808" y="398" text-anchor="end">een uur later</text>
+</svg>
